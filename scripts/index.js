@@ -3,7 +3,7 @@
 
 $(document).ready(function() {
   shoppingList.bindEventListeners();
-  shoppingList.render();
+  shoppingList.render(); 
 });
 
 api.getItems((items) => {
@@ -12,3 +12,5 @@ api.getItems((items) => {
   });
   shoppingList.render();
 });
+
+
