@@ -56,6 +56,10 @@ const shoppingList = (function(){
     // render the shopping list in the DOM
     console.log('`render` ran');
     const shoppingListItemsString = generateShoppingItemsString(items);
+
+    if (store.errorMessage) {
+      $('#error').html(store.errorMessage);
+    }
   
     // insert that HTML into the DOM
     $('.js-shopping-list').html(shoppingListItemsString);
@@ -67,7 +71,11 @@ const shoppingList = (function(){
       event.preventDefault();
       const newItemName = $('.js-shopping-list-entry').val();
       $('.js-shopping-list-entry').val('');
-      api.createItem(newItemName, (item) => {
+      api.createItem(newItemName, (error) => {
+        store.setErrorMessage(error.responseJSON.message);
+        render();
+        store.setErrorMessage(null);
+      }, (item) => {
         store.addItem(item);
         render();
       });

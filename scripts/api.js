@@ -7,33 +7,36 @@ const api = (function () {
     $.getJSON(`${BASE_URL}/items`, callback);
   }
 
-  function createItem(name, callback) {
+  function createItem(name, onError, callback) {
     const newItemString = JSON.stringify({name});
     $.ajax({
       url: `${BASE_URL}/items`,
       method: 'POST',
       contentType: 'application/json',
       data: newItemString,
-      success: callback
+      success: callback,
+      error: onError
     });
   }
 
-  function updateItem(id, updateData, callback){
+  function updateItem(id, updateData, onError, callback){
     $.ajax({
       url: `${BASE_URL}/items/${id}`,
       method: 'PATCH',
       contentType: 'application/json',
       data: JSON.stringify(updateData),
-      success: callback
+      success: callback,
+      error: onError
     });
   }
 
-  function deleteItem(id, callback){
+  function deleteItem(id, onError, callback){
     $.ajax({
       url:`${BASE_URL}/items/${id}`,
       method: 'DELETE',
       contentType: 'application/json',
-      success: callback
+      success: callback,
+      error: onError
     });
   }
 
