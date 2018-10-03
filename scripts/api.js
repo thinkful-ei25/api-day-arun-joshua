@@ -3,9 +3,16 @@
 const api = (function () {
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/joshuaarun';
 
-  function getItems(callback) {
-    $.getJSON(`${BASE_URL}/items`, callback);
+  function getItems(onError, callback) {
+    $.ajax({
+      url: `${BASE_URL}/items`,
+      method: 'GET',
+      dataType: 'json',
+      success: callback,
+      error: onError
+    });
   }
+ 
 
   function createItem(name, onError, callback) {
     const newItemString = JSON.stringify({name});
@@ -18,7 +25,8 @@ const api = (function () {
       error: onError
     });
   }
-
+  
+  
   function updateItem(id, updateData, onError, callback){
     $.ajax({
       url: `${BASE_URL}/items/${id}`,

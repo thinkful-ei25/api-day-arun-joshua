@@ -3,13 +3,9 @@
 
 $(document).ready(function() {
   shoppingList.bindEventListeners();
+  shoppingList.fetchInitialItems();
   shoppingList.render(); 
 });
 
-api.getItems((items) => {
-  items.forEach((item) => {
-    store.addItem(item);
-  });
-  shoppingList.render();
-});
+
 

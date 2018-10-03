@@ -56,13 +56,16 @@ const shoppingList = (function(){
     // render the shopping list in the DOM
     console.log('`render` ran');
     const shoppingListItemsString = generateShoppingItemsString(items);
-
-    if (store.errorMessage) {
-      $('#error').html(store.errorMessage);
-    }
-  
-    // insert that HTML into the DOM
+   
+       // insert that HTML into the DOM
     $('.js-shopping-list').html(shoppingListItemsString);
+    $('#error').html(store.errorMessage);
+  }
+
+  function handleApiError(error){
+    store.setErrorMessage(error.responseJSON.message);
+    render();
+    store.setErrorMessage(null);
   }
   
   
@@ -71,11 +74,7 @@ const shoppingList = (function(){
       event.preventDefault();
       const newItemName = $('.js-shopping-list-entry').val();
       $('.js-shopping-list-entry').val('');
-      api.createItem(newItemName, (error) => {
-        store.setErrorMessage(error.responseJSON.message);
-        render();
-        store.setErrorMessage(null);
-      }, (item) => {
+      api.createItem(newItemName, handleApiError,(item) => {
         store.addItem(item);
         render();
       });
@@ -95,7 +94,7 @@ const shoppingList = (function(){
       const updateData = {
         checked: !item.checked
       };
-      api.updateItem(id, updateData, () => {
+      api.updateItem(id, updateData, handleApiError, () => {
         store.findAndUpdate(id, updateData);
         render();
       });
@@ -108,7 +107,7 @@ const shoppingList = (function(){
       // get the index of the item in store.items
       const id = getItemIdFromElement(event.currentTarget);
       // delete the item
-      api.deleteItem(id, () => {
+      api.deleteItem(id, handleApiError, () => {
         store.findAndDelete(id);
         render();
       });
@@ -123,7 +122,7 @@ const shoppingList = (function(){
       const updateData = {
         name: itemName
       };
-      api.updateItem(id, updateData, function() {
+      api.updateItem(id, updateData, handleApiError, function() {
         store.findAndUpdate(id, updateData);
         store.setItemIsEditing(id, false);
         render();
@@ -154,6 +153,15 @@ const shoppingList = (function(){
     });
   }
   
+  function fetchInitialItems() {
+    api.getItems( handleApiError, (items) => {
+      items.forEach((item) => {
+       store.addItem(item);
+      });
+    shoppingList.render();
+    });
+  }
+  
   function bindEventListeners() {
     handleNewItemSubmit();
     handleItemCheckClicked();
@@ -168,5 +176,6 @@ const shoppingList = (function(){
   return {
     render: render,
     bindEventListeners: bindEventListeners,
+    fetchInitialItems
   };
 }());
