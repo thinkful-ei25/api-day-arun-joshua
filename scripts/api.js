@@ -16,10 +16,7 @@ const api = (function () {
       data: newItemString,
       success: callback
     });
-
   }
-
-
 
   return {
     getItems,
