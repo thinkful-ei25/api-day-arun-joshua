@@ -13,4 +13,3 @@ api.getItems((items) => {
   shoppingList.render();
 });
 
-
